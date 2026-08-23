@@ -13,3 +13,4 @@
 *.log
 *.out
 .videos/
+.Rproj.user
