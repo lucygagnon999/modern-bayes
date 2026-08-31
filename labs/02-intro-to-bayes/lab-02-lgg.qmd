@@ -1,0 +1,44 @@
+---
+title: "Lab 2"
+format: html
+author: "Lucy Gagnon"
+editor: visual
+---
+
+## Task 3
+
+Write a function that takes as its inputs that data you simulated (or any data of the same type) and a sequence of $\theta$ values of length 1000 and produces Likelihood values based on the Binomial Likelihood. Plot your sequence and its corresponding Likelihood function.
+
+The likelihood function is given below. Since this is a probability and is only valid over the interval from $[0, 1]$ we generate a sequence over that interval of length 1000.
+
+You have a rough sketch of what you should do for this part of the assignment. Try this out in lab on your own.
+
+```{r}
+
+### Bernoulli LH Function ###
+# Input: obs_data, theta
+# Output: bernoulli likelihood
+bernoulli_lh <- function(obs_data, theta) {
+  n<-length(obs_data). # define num samples
+  x<-sum(obs_data). # define sample data
+  return(theta^x*(1-theta)^(n-x)) 
+}
+
+
+### Plot LH for a grid of theta values ###
+# Create the grid #
+thetas = seq(0, 1, length.out = 1000)
+# Store the LH values
+lh_values<- bernoulli_lh(obs_data, thetas)
+# Create the Plot
+plot(thetas, lh_values, type = "l", main= "Likelihood Profile", 
+     xlab="Simulated support",ylab = "Likelihood")
+```
+
+## Task 4
+
+Write a function that takes as its inputs prior parameters \textsf{a} and \textsf{b} for the Beta-Bernoulli model and the observed data, and produces the posterior parameters you need for the model. \textbf{Generate and print} the posterior parameters for a non-informative prior such as \textsf{(a,b) = (1,1)} and for an informative case \textsf{(a,b) = (3,1)}}.
+
+```{r}
+
+```
