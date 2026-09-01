@@ -231,8 +231,234 @@ One example where an exponential model would not be appropriate is for modeling 
 
 ### Part A
 
-*Identify a class of conjugate prior densities for* $\theta$*.* \textcolor{red}{Assume the prior parameters are \textcolor{red}{$c$ and $d,$ which are fixed and known.}} *That is, state the prior distribution for* $\theta,$ *which will have* \textcolor{red}{known and fixed} *parameters* $c, d$ *such that the resulting posterior is conjugate. Plot a few members of this class of densities.*
+*Identify a class of conjugate prior densities for* $\theta$*. Assume the prior parameters are* $c$ a*nd* $d$*, which are fixed and known. That is, state the prior distribution for* $\theta,$ *which will have known and fixed parameters* $c, d$ *such that the resulting posterior is conjugate. Plot a few members of this class of densities.*
+
+**Suppose** $\theta$ **also has Galenshore prior density, where** $\theta \sim \text{Galenshore}(c,d)$**.** The prior parameters are $c$ and $d$, which are fixed, known, and greater than 0. So, we have
+
+$$
+p(\theta | c,d) = \frac{2}{\Gamma(c)} \; d^{2c} \theta^{2c - 1} e^{-d^2 \theta^2}\qquad \theta>0
+$$
+
+. We will show that the posterior density, $p(\theta|y_{1:n})$, is conjugate (i.e., the posterior takes on an updated form of the prior). Let $y_1, ..., y_n$ be independent observations such that $Y_i|\theta \sim \text{Galenshore}(a,\theta)$. By Bayes' Theorem,
+
+$$
+p(\theta|y_{1:n}) = \frac{p(\theta, y_{1:n})}{p(y_{1:n})} = \frac{p(\theta|y_{1:n})p(\theta)}{p(y_{1:n})}
+$$. Since we are conditioning on the data, it is a constant, so we have
+
+$$
+\frac{p(\theta|y_{1:n})p(\theta)}{p(y_{1:n})} \propto p(\theta|y_{1:n})p(\theta)
+$$. Then, substituting in our likelihood and prior gives the following:
+
+$$
+p(\theta|y_{1:n})p(\theta) = \prod_{i=1}^n(\frac{2}{\Gamma(a)} \; \theta^{2a} y_i^{2a - 1} e^{-\theta^2 y_i^2})*(\frac{2}{\Gamma(c)} \; d^{2c} \theta^{2c - 1} e^{-d^2 \theta^2})
+$$
+
+. Combining terms and absorbing terms which do not depend on $\theta$ into the constant of proportionality yields
+
+$$
+\begin{align}p(\theta \mid y_{1:n})&\propto\theta^{2an}\exp\left(-\theta^2\sum_{i=1}^n y_i^2\right)\theta^{2c-1}\exp(-d^2\theta^2) \propto\theta^{2(c+na)-1}\exp\left[-\theta^2\left(d^2+\sum_{i=1}^n y_i^2\right)\right].\end{align}
+$$
+
+. Therefore, we found $p(\theta|y_{1:n}) \propto \text{Galenshore}(\theta| c' = c + na, d' = \sqrt{d^2+\sum_{i=1}^n y_i^2})$, so the resulting posterior is conjugate.
+
+Here, we plot a few members of this class of densities:
 
 ```{r}
+### Galenshore prior density function ###
+# Inputs: c, d, and a vector of theta values
+# Output: Galenshore(c, d) density evaluated at theta
 
+galenshore_prior <- function(c, d, thetas) {
+  2 / gamma(c) *
+    d^(2 * c) *
+    thetas^(2 * c - 1) *
+    exp(-d^2 * thetas^2)
+}
+
+### Create grid of theta values ###
+thetas <- seq(0.001, 3, length.out = 1000)
+
+c1 <- 1
+d1 <- 1
+
+c2 <- 2
+d2 <- 1
+
+c3 <- 3
+d3 <- 3
+
+### Calculate prior densities ###
+prior1 <- galenshore_prior(c1, d1, thetas)
+prior2 <- galenshore_prior(c2, d2, thetas)
+prior3 <- galenshore_prior(c3, d3, thetas)
+
+### Plot first prior, then add the other two ###
+plot(
+  thetas, prior1,
+  type = "l",
+  col = "blue",
+  lwd = 2,
+  xlab = expression(theta),
+  ylab = "Prior density",
+  main = "Galenshore Prior Comparison",
+  ylim = c(0, max(prior1, prior2, prior3))
+)
+
+lines(thetas, prior2, col = "red", lwd = 2, lty = 2)
+lines(thetas, prior3, col = "green", lwd = 2, lty = 3)
+
+legend(
+  "topright",
+  legend = c("c = 1, d = 1", "c = 2, d = 1", "c = 3, d = 3"),
+  col = c("blue", "red", "green"),
+  lty = c(1, 2, 3),
+  lwd = 2
+)
 ```
+
+Here, I used ChatGPT to help me fix formatting for long equations and to help me plot the densities.
+
+### Part B
+
+*Let* $Y_1, \ldots, Y_n \stackrel{iid}{\sim}$ *Galenshore(*$a, \theta$*). Find the posterior distribution of* $\theta | y_{1:n}$ *using a prior from your conjugate class.*
+
+Let $\theta \sim \text{Galenshore}(c=1,d=1)$. By the proof-sketch shown in **Part A**, we have that
+
+$\theta \mid y_{1:n} \sim \text{Galenshore}(1+na,\sqrt{1^2+\sum_{i=1}^{n}y_i^2})$, so
+
+$$p(\theta \mid y_{1:n}) =\frac{2}{\Gamma(1+na)} \; (1+\sum_{i=1}^ny_i^2)^{1+na} \theta^{2(1+na) - 1} e^{-(1+\sum_{i=1}^ny_i^2) \theta^2}\qquad \theta>0$$.
+
+### Part C
+
+*Show that* $$\frac{p(\theta_a | y_{1:n})}{p(\theta_b | y_{1:n})} = \bigg( \frac{\theta_a}{\theta_b} \bigg)^{2(an + c) - 1}
+e^{(\theta_b^2 - \theta_a^2)(d^2 + \sum y_i^2)},$$ *where* $$\theta_a, \theta_b \sim \text{Galenshore}(c,d).$$ *Identify a sufficient statistic.*
+
+Let\
+$$\theta_a, \theta_b \sim \text{Galenshore}(c,d).$$ From **Part B**, we know
+
+$$p(\theta_a \mid y_{1:n}) =\frac{2}{\Gamma(1+na)} \; (1+\sum_{i=1}^ny_i^2)^{1+na} \theta_a^{2(1+na) - 1} e^{-(1+\sum_{i=1}^ny_i^2) \theta_a^2}\qquad \theta_a>0$$
+
+and $$p(\theta_b \mid y_{1:n}) =\frac{2}{\Gamma(1+na)} \; (1+\sum_{i=1}^ny_i^2)^{1+na} \theta_b^{2(1+na) - 1} e^{-(1+\sum_{i=1}^ny_i^2) \theta_b^2}\qquad \theta_b>0$$. Dividing $$\frac{p(\theta_a | y_{1:n})}{p(\theta_b | y_{1:n})}$$ and canceling out like terms (that don't depend on $\theta_a$ or $\theta_b$) gives $$\frac{p(\theta_a | y_{1:n})}{p(\theta_b | y_{1:n})} = \bigg( \frac{\theta_a}{\theta_b} \bigg)^{2(an + c) - 1}
+e^{(\theta_b^2 - \theta_a^2)(d^2 + \sum_{i=1}^n y_i^2)}$$. A sufficient statistic is $T(y_{1:n}) = \sum_{i=1}^ny_i^2$.
+
+#### Question: Do I have to defend sufficeint stat?
+
+### Part D
+
+*Determine* $E[\theta | y_{1:n}]$*.*
+
+In the introduction to Question 3, we are given\
+$$E[Y] = \frac{\Gamma(a +1/2)}{\theta \Gamma(a)}$$
+
+for the Galenshore distribution. Since the posterior is also Galenshore with updated parameters, $$
+\theta \mid y_{1:n} \sim \operatorname{Galenshore}\left( c+na,; \sqrt{d^2+\sum_{i=1}^n y_i^2} \right),
+$$we have
+
+$$\boxed{E[\theta | y_{1:n}] = \frac{\Gamma((an+c) +1/2)}{\sqrt{(d^2+\sum_{i=1}^ny_i^2)} \Gamma(an+c)}}.$$
+
+### Part E
+
+*Show that the form of the posterior predictive density is* $$p(y_{n+1} | y_{1:n}) =  \frac{2 y_{n+1}^{2a - 1} \Gamma(an + a + c)}{\Gamma(a)\Gamma(an + c)}
+\frac{(d^2 + \sum y_i^2)^{an + c}}{(d^2 + \sum y_i^2 + y_{n+1}^2)^{(an + a + c)}}.$$
+
+To calculate the posterior predictive density, use
+
+$$
+p(y_{n+1} \mid y_{1:n})
+=
+\int_0^\infty
+p(y_{n+1} \mid \theta)
+p(\theta \mid y_{1:n})
+\, d\theta.
+$$
+
+The likelihood for the new observation is
+
+$$
+p(y_{n+1} \mid \theta)
+=
+\frac{2}{\Gamma(a)}
+\theta^{2a}
+y_{n+1}^{2a-1}
+\exp\left(-\theta^2 y_{n+1}^2\right).
+$$
+
+From Part A, the posterior density is
+
+$$
+p(\theta \mid y_{1:n})
+=
+\frac{2}{\Gamma(an+c)}
+\left(d^2+\sum_{i=1}^n y_i^2\right)^{an+c}
+\theta^{2(an+c)-1}
+\exp\left[
+-\theta^2
+\left(d^2+\sum_{i=1}^n y_i^2\right)
+\right].
+$$
+
+Substituting the likelihood and posterior into the posterior predictive integral gives
+
+$$
+\begin{aligned}
+p(y_{n+1} \mid y_{1:n})
+&=
+\int_0^\infty
+\left[
+\frac{2}{\Gamma(a)}
+\theta^{2a}
+y_{n+1}^{2a-1}
+\exp\left(-\theta^2 y_{n+1}^2\right)
+\right] \\
+&\quad \times
+\left[
+\frac{2}{\Gamma(an+c)}
+\left(d^2+\sum_{i=1}^n y_i^2\right)^{an+c}
+\theta^{2(an+c)-1}
+\exp\left(
+-\theta^2
+\left(d^2+\sum_{i=1}^n y_i^2\right)
+\right)
+\right]
+\, d\theta \\
+&=
+\frac{4y_{n+1}^{2a-1}}
+{\Gamma(a)\Gamma(an+c)}
+\left(d^2+\sum_{i=1}^n y_i^2\right)^{an+c} \\
+&\quad \times
+\int_0^\infty
+\theta^{2(an+a+c)-1}
+\exp\left[
+-\theta^2
+\left(
+d^2+\sum_{i=1}^n y_i^2+y_{n+1}^2
+\right)
+\right]
+\, d\theta.
+\end{aligned}
+$$
+
+To obtain a proper posterior (integrates to 1 over the parameter space, $\Theta$, we multiply and divide by $$ \frac{2}{\Gamma{(an+a+c)}} (d^2+\sum_{i=1}^ny_i^2+y_{n+1}^2)$$, which gives
+
+we obtain
+
+$$
+\boxed{
+p(y_{n+1} \mid y_{1:n})
+=
+\frac{
+2y_{n+1}^{2a-1}\Gamma(an+a+c)
+}{
+\Gamma(a)\Gamma(an+c)
+}
+\frac{
+\left(d^2+\sum_{i=1}^n y_i^2\right)^{an+c}
+}{
+\left(
+d^2+\sum_{i=1}^n y_i^2+y_{n+1}^2
+\right)^{an+a+c}
+}.
+}
+$$
+
+I used ChatGPT to re-format my long equations. Algebra is my own.
