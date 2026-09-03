@@ -286,9 +286,7 @@ QED
 
 *Why is the posterior distribution a proper density or probability distribution function?*
 
-The posterior distribution is a proper density/probability distribution function because it takes the form of an updated Gamma distribution, where $a' = a+n >0$ and $b'=b+\sum_{i=1}^n x_i > 0$. The Gamma distribution is a known, common probability distribution. The posterior distribtion is proper because multiplying the kernel (shown in **Part A)** by the normalizing constant ensures its density integrates to 1 over the entire parameter space, $\Theta$.
-
-#### **Question:** Check that this is not circular reasoning.
+The posterior distribution is a proper density/probability distribution function because it takes the form of an updated Gamma distribution, where $a' = a+n >0$ and $b'=b+\sum_{i=1}^n x_i > 0$. The Gamma distribution is a known, common probability distribution. The posterior distribution is proper because multiplying the kernel (shown in **Part A)** by the normalizing constant ensures its density integrates to 1 over the entire parameter space, $\Theta$.
 
 ## Part C
 
@@ -428,12 +426,43 @@ e^{(\theta_b^2 - \theta_a^2)(d^2 + \sum y_i^2)},$$ *where* $$\theta_a, \theta_b 
 Let\
 $$\theta_a, \theta_b \sim \text{Galenshore}(c,d).$$ From **Part B**, we know
 
-$$p(\theta_a \mid y_{1:n}) =\frac{2}{\Gamma(1+na)} \; (1+\sum_{i=1}^ny_i^2)^{1+na} \theta_a^{2(1+na) - 1} e^{-(1+\sum_{i=1}^ny_i^2) \theta_a^2}\qquad \theta_a>0$$
+$$p(\theta_a \mid y_{1:n}) =\frac{2}{\Gamma(c+na)} \; (d^2+\sum_{i=1}^ny_i^2)^{c+na} \theta_a^{2(c+na) - 1} e^{-(d^2+\sum_{i=1}^ny_i^2) \theta_a^2}\qquad \theta_a>0$$
 
-and $$p(\theta_b \mid y_{1:n}) =\frac{2}{\Gamma(1+na)} \; (1+\sum_{i=1}^ny_i^2)^{1+na} \theta_b^{2(1+na) - 1} e^{-(1+\sum_{i=1}^ny_i^2) \theta_b^2}\qquad \theta_b>0$$. Dividing $$\frac{p(\theta_a | y_{1:n})}{p(\theta_b | y_{1:n})}$$ and canceling out like terms (that don't depend on $\theta_a$ or $\theta_b$) gives $$\frac{p(\theta_a | y_{1:n})}{p(\theta_b | y_{1:n})} = \bigg( \frac{\theta_a}{\theta_b} \bigg)^{2(an + c) - 1}
+and $$p(\theta_b \mid y_{1:n}) =\frac{2}{\Gamma(c+na)} \; (d^2+\sum_{i=1}^ny_i^2)^{c+na} \theta_b^{2(c+na) - 1} e^{-(d^2+\sum_{i=1}^ny_i^2) \theta_b^2}\qquad \theta_b>0$$. Dividing $$\frac{p(\theta_a | y_{1:n})}{p(\theta_b | y_{1:n})}$$ and canceling out like terms (that don't depend on $\theta_a$ or $\theta_b$) gives $$\frac{p(\theta_a | y_{1:n})}{p(\theta_b | y_{1:n})} = \bigg( \frac{\theta_a}{\theta_b} \bigg)^{2(an + c) - 1}
 e^{(\theta_b^2 - \theta_a^2)(d^2 + \sum_{i=1}^n y_i^2)}$$. A sufficient statistic is $T(y_{1:n}) = \sum_{i=1}^ny_i^2$.
 
-#### Question: Do I have to defend sufficient stat?
+To find a sufficient statistic more formally using the likelihood, we use the Fisher-Neymar factorization theorem: if the probability density function is $p(y_{1:n}\mid \theta)$ where $\theta$ is a parameter, then $T$ is sufficient for $\theta$ if and only if non-negative functions $g$ and $h$ can be found such that $p(y_{1:n}\mid \theta) = h(y_{1:n}) * g(\theta, T(y_{1:n})$ (source= *Wikipedia*). Observe
+
+$$
+\begin{aligned}
+p(y_{1:n} \mid \theta)
+&=
+\prod_{i=1}^n
+\left[
+\frac{2}{\Gamma(a)}
+\theta^{2a}
+y_i^{2a-1}
+\exp(-\theta^2 y_i^2)
+\right] \\
+&=
+\left[
+\left(\frac{2}{\Gamma(a)}\right)^n
+\prod_{i=1}^n y_i^{2a-1}
+\right]
+\left[
+\theta^{2an}
+\exp\left(
+-\theta^2\sum_{i=1}^n y_i^2
+\right)
+\right]\\
+&= 
+h(y_{1:n})*g(\theta, T(y_{1:n})= \sum_{i=1}^n y_i^2).
+\end{aligned}
+$$
+
+Therefore, a sufficient statistic is $T(y_{1:n}) = \sum_{i=1}^ny_i^2$.
+
+I used ChatGPT to re-format the long equation above.
 
 ### Part D
 
