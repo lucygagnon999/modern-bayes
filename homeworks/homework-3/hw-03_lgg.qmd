@@ -1,0 +1,112 @@
+---
+title: "HW3"
+author: "Lucy Gagnon"
+format: html
+editor: visual
+---
+
+## Question 2
+
+*The Uniform-Pareto*\
+**The goal of this problem is to continue getting more practice calculating the posterior distribution.**\
+
+Suppose $a < x < b.$ Consider the notation $I_{(a,b)}(x),$ where $I$ denotes the indicator function. We define $I_{(a,b)}(x)$ to be the following:
+
+$$
+I_{(a,b)}(x)=
+\begin{cases} 
+1 & \text{if $a < x < b$,}
+\\
+0 &\text{otherwise.}
+\end{cases}
+$$
+
+Let X be a random variable and let x be an observed value. Let
+
+$$
+\begin{aligned}
+X=x \mid \theta &\sim \text{Uniform}(0,\theta)\\
+\theta &\sim \text{Pareto}(\alpha,\beta),
+\end{aligned}
+$$
+
+where $p(\theta) = \dfrac{\alpha\beta^\alpha}{\theta^{\alpha+1}}I_{(\beta,\infty)}(\theta).$ Write out the likelihood $p(X=x\mid \theta).$
+
+Then calculate the posterior distribution of $\theta|X=x.$
+
+$\textbf{Hint 1}$: To set up this problem, do the following:
+
+$$p(\theta \mid x) \propto \frac{1}{\theta} I_{(0,\theta)}(x)
+\times 
+\frac{\alpha \beta^{\alpha}}
+{\theta^{\alpha + 1}}
+I_{(\beta, \infty)}(\theta).$$
+
+$\textbf{Hint 2}$: You cannot drop the indicators. You must write the indicators as functions of $\theta$ since this is the random variable.
+
+$\textbf{Hint 3}$: It will end up being an updated Pareto.
+
+\_\_\_\_\_\_\_\_
+
+*Proof.* Consider the notation $I_{(a,b)}(x),$ where $I$ denotes the indicator function. We define $I_{(a,b)}(x)$ to be the following:
+
+$$
+I_{(a,b)}(x)=
+\begin{cases} 
+1 & \text{if $a < x < b$,}
+\\
+0 &\text{otherwise.}
+\end{cases}
+$$
+
+Let *X* be a random variable and let *x* be an observed value. Let
+
+$$
+\begin{aligned}
+X=x \mid \theta &\sim \text{Uniform}(0,\theta)\\
+\theta &\sim \text{Pareto}(\alpha,\beta),
+\end{aligned}
+$$
+
+where $p(\theta) = \dfrac{\alpha\beta^\alpha}{\theta^{\alpha+1}}I_{(\beta,\infty)}(\theta).$ The likelihood $p(X=x\mid \theta)$ may be written as
+
+$$
+p(X=x\mid \theta) = \left( \frac {1}{\theta - 0} \right)^n * \mathbf{I}_{(0, \theta)}(x) = \left( \frac {1}{\theta} \right)^n * \mathbf{I}_{(0, \theta)}(x).
+$$
+
+We will calculate the posterior distribution of $\theta|X=x.$ By Bayes' Theorem, observe
+
+$$
+p(\theta \mid x) = \frac{p(x, \theta)}{p(x)} = \frac{p(x \mid \theta) * p(\theta)}{p(x)} \propto p(x \mid \theta) * p(\theta).
+$$
+
+when we absorb terms that do not depend on $\theta$ ( i.e., $p(x)$) into the constant of proportionality. Substitutitng in our likelihood and prior gives
+
+$$
+\begin{aligned}
+p(x \mid \theta) *p(\theta) \\&=
+\left( \left( \frac {1}{\theta} \right)^n * \mathbf{I}_{(0, \theta)}(x) \right) * \left( \dfrac{\alpha\beta^\alpha}{\theta^{\alpha+1}}I_{(\beta,\infty)}(\theta) \right) \\ &\propto  
+\mathbf{I}_{(0, \theta)}(x) \frac{1}{\theta^{(\alpha+n)+1}}I_{(\beta,\infty)}(\theta) .
+\end{aligned}
+$$
+
+When we absorb terms not depending on $\theta$ into the constant of proportionality. To simplify the indicator functions into 1 term, we must consider the region where both and \$\$\$
+
+$$
+\mathbf{I}_{(0, \theta)}(x)
+$$
+
+## *Question 3*
+
+*The Bayes estimator or Bayes rule*\
+**The goal of this problem is to practice a similar problem that we considered in Module 2, where we derived the Bayes rule under squared error loss and found the result was the posterior mean.**
+
+### Part A
+
+Find the Bayes estimator (or Bayes rule) when the loss function is $L(\theta, \delta(x))~=~c~(\theta-\delta(x))^2,$ where $c >0$ is a constant.
+
+### Part B
+
+Derive the Bayes estimator (or Bayes rule) when $L(\theta, \delta(x)) = w(\theta) (g(\theta)-\delta(x))^2.$ Assume that $w(\theta) > 0.$
+
+Hint: Do so without writing any integrals. Note that you can write $\rho(\theta,\delta(x)) =  E[L(\theta,\delta(x))|X].$ Don't forget to prove or state why the Bayes rule(s) are unique.
