@@ -201,3 +201,7 @@ legend('topright', legend = c('Bayes', 'sample mean', 'constant'),
 #### risk. The sample mean estiamtor of rsik eprforms better than Bayes risk 
 #### at the endpoints, 0 and 1. The constant estimator performs best around 0.1,
 #### and teh Bayes risk performs best for most other values of theta.
+
+#### We also cannot conclude admissability from the plot typically. We also 
+#### would need to consider all other estimators. Safer to do in a mathematical
+#### way.

@@ -80,7 +80,7 @@ $$
 p(\theta \mid x) = \frac{p(x, \theta)}{p(x)} = \frac{p(x \mid \theta) * p(\theta)}{p(x)} \propto p(x \mid \theta) * p(\theta).
 $$
 
-when we absorb terms that do not depend on $\theta$ ( i.e., $p(x)$) into the constant of proportionality. Substitutitng in our likelihood and prior gives
+when we absorb terms that do not depend on $\theta$ ( i.e., $p(x)$) into the constant of proportionality. Substituting in our likelihood and prior gives
 
 $$
 \begin{aligned}
@@ -90,10 +90,28 @@ p(x \mid \theta) *p(\theta) \\&=
 \end{aligned}
 $$
 
-When we absorb terms not depending on $\theta$ into the constant of proportionality. To simplify the indicator functions into 1 term, we must consider the region where both and \$\$\$
+When we absorb terms not depending on $\theta$ into the constant of proportionality. To simplify the indicator functions into 1 term, we must consider the region where both
 
 $$
-\mathbf{I}_{(0, \theta)}(x)
+\mathbf{I}_{(0, \theta)}(x) = 1 
+$$
+
+and
+
+$$
+\mathbf{I}_{(\beta, \infty)}(\theta) = 1
+$$
+
+, which is true for $\theta$ between the maximum value of itself and $\beta$ and $\infty$. Thus, we have
+
+$$
+\mathbf{I}_{(0, \theta)}(x) \frac{1}{\theta^{(\alpha+n)+1}}I_{(\beta,\infty)}(\theta) = \frac{1}{\theta^{(\alpha+n)+1}}I_{(\max(\beta,x),\infty)}(\theta) \propto \text{Pareto}(\alpha' = \alpha+1, \beta' = \max(\beta,x),\infty). 
+$$
+
+Therefore, the posterior distribution of of $\theta|X=x$ is and updated Pareto distribution,
+
+$$
+\theta\mid X=x \sim \text{Pareto}(\alpha' = \alpha+1, \beta' = \max(\beta,x),\infty). 
 $$
 
 ## *Question 3*
@@ -105,8 +123,58 @@ $$
 
 Find the Bayes estimator (or Bayes rule) when the loss function is $L(\theta, \delta(x))~=~c~(\theta-\delta(x))^2,$ where $c >0$ is a constant.
 
+*Proof.* Suppose we have the loss function $L(\theta, \delta(x))~=~c~(\theta-\delta(x))^2,$ where $c >0$ is a constant. We will find the Bayes estimator, $\hat{\delta}(x)$. Observe
+
+$$
+\begin{aligned}
+\rho(\theta,\delta(x)) &=  E[L(\theta,\delta(x))|X] \\
+&=E[c(\theta-\delta(x))^2), \delta(x)]\\
+&=E[c(\theta^2-2\theta\delta(x)-\delta(x)^2)\mid X]\\
+&=c(E[\theta^2\mid X]-2E[\theta\delta(x)\mid X]+E[\delta(x)^2\mid X]).
+\end{aligned}
+$$
+
+To find the Bayes estimator, we take the derivative with respect to $\delta(x)$ and solve for $\hat{\delta}(x)$ when $\frac{\partial \rho(\theta, \delta(x))}{\partial \delta(x)}=0$. Observe
+
+$$
+0= \frac{\partial \rho(\theta, \delta(x))}{\partial \delta(x)}=c(-2E[\theta\mid X]+2E[\hat{\delta}(x)\mid X]).
+$$
+
+Solving for $\hat{\delta}(x)$ gives $\hat{\delta}(x) = E[\theta \mid X]$. To check if the solution is unique, it must be true that $\frac{\partial^2 \rho(\theta, \delta(x))}{\partial \delta(x)^2} >0.$ Here, we find
+
+$$
+\frac{\partial^2 \rho(\theta, \delta(x))}{\partial \delta(x)^2} = 2c>0.
+$$
+
+since $c>0$. Thus, our Bayes estimator is unique. QED
+
 ### Part B
 
 Derive the Bayes estimator (or Bayes rule) when $L(\theta, \delta(x)) = w(\theta) (g(\theta)-\delta(x))^2.$ Assume that $w(\theta) > 0.$
 
 Hint: Do so without writing any integrals. Note that you can write $\rho(\theta,\delta(x)) =  E[L(\theta,\delta(x))|X].$ Don't forget to prove or state why the Bayes rule(s) are unique.
+
+*Proof.* Suppose we have the loss function $L(\theta, \delta(x))~=w(\theta)(g(\theta)-\delta(x))^2,$ where $c >0$ is a constant. We will find the Bayes estimator, $\hat{\delta}(x)$. Observe
+
+$$
+\begin{aligned}
+\rho(\theta,\delta(x)) &=  E[L(\theta,\delta(x))|X] \\
+&=E[w(\theta)(g(\theta)-\delta(x))^2), \delta(x)]\\
+&=E[w(\theta)(g(\theta)^2-2g(\theta)\delta(x)-\delta(x)^2)\mid X]\\
+&=E[w(\theta)g(\theta)^2\mid X]-2E[w(\theta)g(\theta)\delta(x)\mid X]+E[w(\theta)\delta(x)^2\mid X]).
+\end{aligned}
+$$
+
+To find the Bayes estimator, we take the derivative with respect to $\delta(x)$ and solve for $\hat{\delta}(x)$ when $\frac{\partial \rho(\theta, \delta(x))}{\partial \delta(x)}=0$. Observe
+
+$$
+0= \frac{\partial \rho(\theta, \delta(x))}{\partial \delta(x)}=-2E[w(\theta)g(\theta)\mid X]+2E[w(\theta)\hat{\delta}(x)\mid X]).
+$$
+
+Solving for $\hat{\delta}(x)$ gives $\hat{\delta}(x) = \frac{E[w(\theta)g(\theta) \mid X]}{E[w(\theta \mid X]}$. To check if the solution is unique, it must be true that $\frac{\partial^2 \rho(\theta, \delta(x))}{\partial \delta(x)^2} >0.$ Here, we find
+
+$$
+\frac{\partial^2 \rho(\theta, \delta(x))}{\partial \delta(x)^2} = 2*E[w(\theta)>0.
+$$
+
+since we assume $w(\theta)>0$. Thus, our Bayes estimator is unique. QED
