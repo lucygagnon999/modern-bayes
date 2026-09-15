@@ -1,0 +1,127 @@
+---
+title: "HW4"
+author: "Lucy Gagnon"
+format: html
+editor: visual
+---
+
+## Question 1
+
+### Part A
+
+*Let* $\theta \sim \text{beta}(a,b)$ *and let* $\psi = \log[\theta/(1- \theta)].$ *Obtain the form of* $p_{\psi}$ *and plot* $p_{\psi}$ *for the case that* $a=b=1.$
+
+We are given
+
+$$
+p_{\psi}(\psi) = p_{\theta}(h(\psi)) \times | \frac{dh}{d\psi} |.
+$$
+
+Let $\psi= g(\theta),$ where $g$ is a monotone function of $\theta,$ and $h$ be the inverse of $g$ so that $\theta = h(\psi)$. Since $\theta \sim \text{beta}(a,b)$, we have that the probability density of $\theta,$ $p_{\theta}(\theta),$ is given by
+
+$$
+p_\theta(\theta) = p_\theta(h(\psi)) = \frac{1}{B(a,b)}*(h(\psi))^{a-1}*(1-h(\psi))^{b-1}.
+$$
+
+Since $h$ is the inverse of $g(\theta) = \psi$ and $\psi = \log[\frac{\theta}{1-\theta}]$, it follows that $h(\psi) = \theta = \frac{e^\psi}{e^\psi + 1}.$ Observe
+
+$$
+\begin{aligned}
+p_{\psi}(\psi) &= p_{\theta}(h(\psi)) \times \left| \frac{dh}{d\psi} \right|\\
+&= p_{\theta}\left(\frac{e^\psi}{e^\psi + 1}\right)
+\times \left| \frac{d}{d\psi}\left(\frac{e^\psi}{e^\psi + 1}\right)\right|\\
+&= \frac{1}{B(a,b)}
+\times \left(\frac{e^\psi}{e^\psi + 1}\right)^{a-1}
+\times \left(1-\frac{e^\psi}{e^\psi + 1}\right)^{b-1}
+\times \frac{e^\psi}{(e^\psi + 1)^2}\\
+&= \frac{1}{B(a,b)}
+\times \left(\frac{e^\psi}{e^\psi + 1}\right)^{a-1}
+\times \left(\frac{e^\psi + 1}{e^\psi + 1}
+-\frac{e^\psi}{e^\psi + 1}\right)^{b-1}
+\times \frac{e^\psi}{(e^\psi + 1)^2}\\
+&= \frac{1}{B(a,b)}
+\times \left(\frac{e^\psi}{e^\psi + 1}\right)^{a-1}
+\times \left(\frac{e^\psi + 1 - e^\psi}{e^\psi + 1}\right)^{b-1}
+\times \frac{e^\psi}{(e^\psi + 1)^2}\\
+&= \frac{1}{B(a,b)}
+\times \frac{e^{\psi(a-1)}}{(e^\psi + 1)^{a-1}}
+\times \left(\frac{1}{e^\psi + 1}\right)^{b-1}
+\times \frac{e^\psi}{(e^\psi + 1)^2}\\
+&= \frac{1}{B(a,b)}
+\times \frac{e^{\psi(a-1)} \times e^\psi}
+{(e^\psi + 1)^{a-1+b-1+2}}\\
+&= \frac{1}{B(a,b)}
+\times \frac{e^{a\psi}}{(e^\psi + 1)^{a+b}}.
+\end{aligned}
+$$
+
+When $a=b=1$,
+
+$$
+p_\psi(\psi) = \frac{1}{B((1),(1))}
+\times \frac{e^{(1)\psi}}{(e^\psi + 1)^{(1)+(1)}}  = 
+\boxed{\frac{e^{\psi}}{(e^\psi + 1)^{2}}}.
+$$
+
+Here is the plot of $p(\psi)$ when $a=b=1$:
+
+```{r}
+### Plot prob density for psi when a = b = 1 ###
+# Create a grid over the support of psi
+psi_vals <- seq(-10, 10, length.out = 1000)
+
+# Compute the density values
+prob_values <- exp(psi_vals) / (exp(psi_vals) + 1)^2
+
+# Create the plot
+plot(psi_vals, prob_values, type = "l", xlab = expression(psi),
+  ylab = "Probability density", main = "Density of psi when a = b = 1")
+```
+
+### Part B
+
+Let $\theta \sim \text{gamma}(a = shape,b = rate)$ and let $\psi = \log(\theta).$ Obtain the form of $p_{\psi}$ and plot $p_{\psi}$ for the case that $a=b=1.$
+
+Now, since $\theta \sim \text{gamma}(a = shape,b = rate)$, we have
+
+$$
+p_\theta(\theta) = \frac{b^a}{\Gamma(a)} \times\theta^{a-1} \times e^{-b\theta}.
+$$
+
+Since $\psi = log(\theta)$, now we have $h(\psi) = \theta = e^\psi$, and $\left| \frac{dh}{d\psi} \right| = e^\psi$. Observe
+
+$$
+\begin{aligned}
+p_{\psi}(\psi) &= p_{\theta}(h(\psi)) \times | \frac{dh}{d\psi} |\\
+&= p_\theta(e^\psi)\times(e^\psi)\\
+&=\frac{b^a}{\Gamma(a)} \times e^{\psi(a-1)} \times e^{-be^\psi}\times e^\psi\\
+&=\frac{b^a}{\Gamma(a)} \times e^{a\psi-be^\psi}.
+\end{aligned}
+$$
+
+When $a=b=1$, observe
+
+$$
+p_\psi(\psi) =\frac{(1)^(1)}{\Gamma((1))} \times e^{(1)\psi-(1)e^\psi} = \boxed{e^{\psi-e^\psi}}.
+$$
+
+Plotting gives the following:
+
+```{r}
+### Plot prob density for psi when a = b = 1 ###
+# Create a grid over the support of psi
+psi_vals_new <- seq(-10, 10, length.out = 1000)
+
+# Compute the density values
+prob_values_new <- exp(psi_vals-exp(psi_vals)) 
+
+# Create the plot
+plot(psi_vals_new, prob_values_new, type = "l", xlab = expression(psi),
+  ylab = "Probability density", main = "Density of psi when a = b = 1")
+```
+
+## Question 2
+
+### Lab Task 4
+
+### Lab Task 5
