@@ -139,11 +139,19 @@ simDF_prior$lambda = simDF_prior$lambda^{-0.5}
 
 
 ggplot(data = simDF_prior, aes(x = mu, y = lambda)) +
-  geom_point(alpha = 0.2) + 
+  geom_point(color = "darkgreen", alpha = 1, size = 1) + 
   labs(x = expression(paste(mu, " (Mean Change in IQ Score)")),
        y = expression(paste(lambda^{-1/2}, " (Std. Dev. of Change)")))  + 
   ggtitle("Prior Samples")+ 
-  theme(plot.title = element_text(hjust = 0.5)
-        coord_cartesian(xlim = c(-50, 50), ylim = c(0, 40))
-
+  theme(plot.title = element_text(hjust = 0.5))+
+  xlim(-50, 50) +
+  ylim(0, 40)
+#### Based on the samples drawn form the scatterplot, we observe that the choice
+#### of prior conforms with our prior beliefs. We expect there to be no change
+#### in IQ score (i.e., mean is 0) based on oru prior beliefs because we do not 
+#### have any expert information suggesting a change in IQ score. Therefore, we
+#### expect most points ot be clustered near $\mu = 0$, and we expect greater 
+#### standard devistions of change with greater mean changes in IQ score since
+#### we are likely to observe more variability with more pronounced mean IQ 
+#### score changes.
 
