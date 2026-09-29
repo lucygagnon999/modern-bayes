@@ -55,7 +55,7 @@ Figure 1: Comparision of the target function and the Unif(0,1) and the Beta(2,2)
 
 # Tasks 2 -- 4
 
-According to the rejection sampling approach sample from f(x) using the Unif(0,1) pdf as an enveloping function. In order to do this, we write a general rejection sampling function that also allows us to plot the historams for any simulation size. Finally, our function also allows us to look at task 4 quite easily. 
+According to the rejection sampling approach sample from f(x) using the Unif(0,1) pdf as an enveloping function. In order to do this, we write a general rejection sampling function that also allows us to plot the histograms for any simulation size. Finally, our function also allows us to look at task 4 quite easily. 
 
 ```{r}
 sim_fun <- function(f, envelope = "unif", par1 = 0, par2 = 1, n = 10^2, plot = TRUE){

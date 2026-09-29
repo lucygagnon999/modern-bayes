@@ -1,0 +1,128 @@
+---
+title: "HW5"
+author: "Lucy Gagnon"
+format: html
+editor: visual
+---
+
+```{r}
+# set seed
+set.seed(123)
+```
+
+## Question 1
+
+Jeffrey's (1961) suggested a default rule for generating a prior distribution of a parameter $\theta$ in a sampling model $p(y \mid \theta).$ Jeffreys' prior is given by $$p_J(\theta) \propto \sqrt{I(\theta)},$$ where $$I(\theta) = - E\left[
+\frac{\partial^2 \log p(Y \mid \theta)}{\partial \theta^2}
+\mid \theta \right]
+$$ is the Fisher information.
+
+### Part A
+
+*Let* $Y \sim \text{Binomial}(n,\theta).$ *Show that* $p_J(\theta) \propto Beta(1/2,1/2).$
+
+We have that $$p_J(\theta) \propto \sqrt{I(\theta)},$$
+
+where $$I(\theta) = - E\left[
+\frac{\partial^2 \log p(Y \mid \theta)}{\partial \theta^2}
+\mid \theta \right]
+$$ is the Fisher information. We want to show that $p_J(\theta) \propto Beta(1/2,1/2).$ Let $Y \sim \text{Binomial}(n,\theta)$, so we have $p(Y|\theta) = {n \choose y} \theta^y*(1-\theta)^{n-y}$ First, we will simplify $\frac{\partial^2}{\partial \theta^2} \log(p(Y|\theta))$:
+
+$$
+\begin{align}
+\frac{\partial^2}{\partial \theta^2} \log(p(Y|\theta)) 
+&= \frac{\partial^2}{\partial \theta^2} \log[{n \choose y} \theta^y*(1-\theta)^{n-y}]\\
+&= \frac{\partial^2}{\partial \theta^2} \log[{n \choose y}]+y*\log[\theta]+(n-y)\log[(1-\theta)]\\
+&=\frac{\partial}{\partial \theta} \left( \frac{\partial}{\partial \theta} \left( \log[{n \choose y}]+y*\log[\theta]+(n-y)\log[(1-\theta)]\right)\right)\\
+&=\frac{\partial}{\partial \theta}\left( y*\frac{1}{\theta}+(n-y)\frac{1}{(1-\theta)}\right)\\
+&= -y*\frac{1}{\theta^2}-(n-y)\frac{1}{(1-\theta)^2}.
+\end{align}
+$$
+
+Then, taking the expectation of the simplified expression yields
+
+$$
+\begin{align}
+\mathbf{E}[-y*\frac{1}{\theta^2}-(n-y)\frac{1}{(1-\theta)^2}]
+&= - \frac{1}{\theta^2}\mathbf{E}[y]-\frac{1}{(1-\theta)^2}\mathbf{E}[(n-y)]]\\
+&= - \frac{1}{\theta^2}\mathbf{E}[y]-\frac{1}{(1-\theta)^2}(n-\mathbf{E}[y])\\
+\end{align}
+$$
+
+Since $Y$ is sampled from a binomial distribution, we know $\mathbf{E} = n*\theta$. Observe
+
+$$
+\begin{align}
+ - \frac{1}{\theta^2}\mathbf{E}[y]-\frac{1}{(1-\theta)^2}(n-\mathbf{E}[y])
+&= - \frac{1}{\theta^2}*(n\theta)-\frac{1}{(1-\theta)^2}(n-(n\theta))\\
+&=-\frac{n}{\theta}-\frac{n(1-\theta)}{(1-\theta)^2}\\
+&=-\frac{n}{\theta}-\frac{n(1-\theta)}{(1-\theta)^2}\\
+&= -\frac{n}{\theta}-\frac{n}{(1-\theta)}\\
+&= -\frac{n(1-\theta)}{\theta*(1-\theta)}-\frac{n*\theta}{\theta*(1-\theta)}\\
+&= -\frac{-n+n*\theta-n*\theta}{\theta*(1-\theta)}\\
+&= -\frac{-n}{\theta*(1-\theta)}\\
+&\propto \theta^{-1/2}*(1-\theta)^{-1/2} \\
+&=Beta(1/2, 1/2).
+\end{align}
+$$
+
+Therefore, $\boxed{p_J(\theta) \propto Beta(1/2,1/2)}.$
+
+### Part B
+
+## Question 2
+
+### Part A
+
+*Provide the four histograms from Tasks 2 and 3 using the Uniform(0,1) and the Beta(2,2) enveloping proposals. Provide the acceptance ratios. Provide commentary.*
+
+```{r}
+# grid of points
+x <- seq(0, 1, 10^-2)
+fx <- function(x) sin(pi * x)^2
+sim_fun <- function(f, envelope = "unif", par1 = 0, par2 = 1, n = 10^2, plot = TRUE){
+  
+  r_envelope <- match.fun(paste0("r", envelope))
+  d_envelope <- match.fun(paste0("d", envelope))
+  proposal <- r_envelope(n, par1, par2)
+  density_ratio <- f(proposal) / d_envelope(proposal, par1, par2)
+  samples <- proposal[runif(n) < density_ratio]
+  acceptance_ratio <- length(samples) / n
+  if (plot) {
+    hist(samples, probability = TRUE, 
+         main = paste0("Histogram of ", 
+                       n, " samples from ", 
+                       envelope, "(", par1, ",", par2,
+                       ").\n Acceptance ratio: ",
+                       round(acceptance_ratio,2)), 
+         cex.main = 0.75)
+  }
+  list(x = samples, acceptance_ratio = acceptance_ratio)
+}
+par(mfrow = c(2,2), mar = rep(4, 4))
+unif_1 <- sim_fun(fx, envelope = "unif", par1 = 0, par2 = 1, n = 10^2) 
+unif_2 <- sim_fun(fx, envelope = "unif", par1 = 0, par2 = 1, n = 10^5)
+beta_1 <- sim_fun(fx, envelope = "beta", par1 = 2, par2 = 2, n = 10^2)
+beta_2 <- sim_fun(fx, envelope = "beta", par1 = 2, par2 = 2, n = 10^5)
+par(mfrow = c(1,1))
+```
+
+Here, we provided the four histograms from Tasks 2 and 3 using the Uniform(0,1) and the Beta(2,2) enveloping proposals, along with acceptance ratios. We obtained similar acceptance ratios between 0.47 and 0.54 across all 4 conditions. The simulations of size $10^5$ show smoother histograms. Thus, it is not always the case that a larger simulation size will produce a higher (better) acceptance ratio.
+
+#### **Question:** Does this make sense for a description?
+
+### Part B
+
+*(i) Do you recommend the Uniform(0,1) or the Beta(2,2) as a better enveloping function (or are they about the same)?*
+
+Since the acceptance ratios range between 0.47 - 0.54, both the Uniform(0,1) and Beta (2,2) perform similarly for this target function, so I recommend both based on the observed acceptance ratios.
+
+*(ii) If you were to try and find an enveloping function that had a high acceptance ratio, which one would you try and why? For part (ii), either back up your choice using a small paragraph or (ii) empirically illustrate that it's better. (If you wanted to go above and beyond, you could do both, which is highly encouraged and would really prepare you for the exam!)*
+
+To try and find an enveloping function with a high acceptance ratio, I would choose a function that closely resembles the target function and is relatively easy to sample from. Since $\text{eff}(q(x))  = \frac{1}{c} \int_x\tilde{f}(x) dx$ and here we have $\int_0^1 \sin^2(\pi x) dx = 0.5$. Here, the ideal enveloping function is $q(x)2*\sin^2(\pi x)$ since this function would give $\tilde{f}(x) = \frac{1}{2} q(x)$, resulting in $\hat{c} = 1/2$ and a resulting acceptance ratio of 1:
+
+$$
+\frac{1}{(1/2)}\int_0^1 \sin^2(\pi x) dx = 2*1/2 = 1.
+$$
+
+####  **Question:** Is this what this question is meaning to ask? Would we normally have the target function and be able to choose such a specific function like this?
