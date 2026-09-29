@@ -70,6 +70,113 @@ Therefore, $\boxed{p_J(\theta) \propto Beta(1/2,1/2)}.$
 
 ### Part B
 
+*Re-parameterize the model in part a such that* $\psi= \log[\theta/(1-\theta)].$ *This implies that* $p(y \mid \psi) =
+{n \choose y} e^{\psi y} (1 + e^{\psi})^{-n}.$ *Show that* $$p_J(\psi) \propto \frac{n^{1/2}e^{\psi/2}}{1+ e^{\psi}} \propto \frac{e^{\psi/2}}{1+ e^{\psi}}.$$
+
+Re-parameterizing the model in part a such that $\psi= \log[\theta/(1-\theta)]$ now gives $p(y|\psi) = {n \choose y}e^{\psi  y}*(1+e^{\psi})^{-n}$. Observe
+
+$$
+\begin{align}
+p_J(\psi) \propto \sqrt{I(\psi)} 
+&= \sqrt{-\mathbf{E}\left[
+\frac{\partial^2 \log p(Y \mid \psi)}{\partial \psi^2}
+\mid \psi \right]}.
+\end{align}
+$$
+
+First, consider the following:
+
+$$
+\begin{aligned}
+\frac{\partial^2 \log p(y \mid \psi)}{\partial \psi^2}
+&= \frac{\partial^2}{\partial \psi^2}
+\log\left(\binom{n}{y}e^{\psi y}(1+e^\psi)^{-n}\right)\\
+&= \frac{\partial^2}{\partial \psi^2}
+\left[
+\log\left(\binom{n}{y}\right)
++ \psi y
+- n\log(1+e^\psi)
+\right]\\
+&= \frac{\partial}{\partial \psi}
+\left[
+\frac{\partial}{\partial \psi}
+\log\left(\binom{n}{y}\right)
++ y
+- n\frac{e^\psi}{1+e^\psi}
+\right]\\
+&= \frac{\partial}{\partial \psi}
+\left[
+y - n e^\psi(1+e^\psi)^{-1}
+\right]\\
+&= -n e^\psi(1+e^\psi)^{-1}
++ n e^{2\psi}(1+e^\psi)^{-2}\\
+&=-ne^\psi(1+e^\psi)^{-1}[1-e^\psi(1+e^\psi)^{-1}]\\
+&=-ne^\psi(1+e^\psi)^{-1}[\frac{(1+e^\psi)-e^\psi}{(1+e^\psi)}]\\
+&=-ne^\psi(1+e^\psi)^{-1}[\frac{1}{(1+e^\psi)}]\\
+&=-\frac{ne^\psi}{(1+e^\psi)^2}\\
+\end{aligned}
+$$
+
+Now, substituting the above expression into $$
+\begin{align}
+p_J(\psi) \propto \sqrt{I(\psi)} 
+&= \sqrt{-\mathbf{E}\left[
+\frac{\partial^2 \log p(Y \mid \psi)}{\partial \psi^2}
+\mid \psi \right]}.
+\end{align}
+$$
+
+yields the following:
+
+$$
+\begin{align}
+\sqrt{-\mathbf{E}\left[
+\frac{\partial^2 \log p(Y \mid \psi)}{\partial \psi^2}
+\mid \psi \right]} 
+&= \sqrt{-\mathbf{E}\left[-\frac{ne^\psi}{(1+e^\psi)^2}\right]}\\
+&= \frac{n^{1/2}e^{\psi/2}}{1+e^\psi}
+\end{align}
+$$
+
+Therefore, we have $$p_J(\psi) \propto \frac{n^{1/2}e^{\psi/2}}{1+ e^{\psi}} \propto \frac{e^{\psi/2}}{1+ e^{\psi}}.$$
+
+### Part C
+
+*Take the prior distribution from (a) and apply the change of variables formula from exercise 3.10 (see Homework 4) to obtain the induced prior density on* $\psi.$ *This density should be the same as the one derived in part b) of this exercise. This consistency under re-parametrization is the defining characteristic of Jeffereys' prior.*
+
+The prior distribution from a) is $p_J(\theta) \propto Beta(1/2, 1/2) \propto \theta^{-1/2}(1-\theta)^{-1/2}$. Using the change of variables formula from exercise 3.10, we have $h(\psi) = \theta  = \frac {e^\psi}{1+e\psi}$ and $p_J(\psi) = p_J(h(\psi)) \times \left|{\frac{dh}{d\psi}}\right|$. We know $p_J(\theta) \propto \theta^{-1/2}(1-\theta)^{-1/2}$. Observe
+
+$$
+\begin{align}
+p_J(h(\psi)) = p_J(\frac {e^\psi}{1+e\psi}) &\propto \left( \frac {e^\psi}{1+e\psi}\right)^{-1/2} * \left( 1- \frac {e^\psi}{1+e\psi}\right)^{-1/2}\\
+&=\frac{1+e^\psi}{e^{\psi/2}}.
+\end{align}
+$$
+
+Now, observe: $$
+\begin{aligned}
+\left|\frac{dh}{d\psi}\right|
+&= \left|\frac{d}{d\psi}\frac{e^\psi}{1+e^\psi}\right|\\
+&= \frac{(1+e^\psi)e^\psi - e^\psi e^\psi}{(1+e^\psi)^2}\\
+&= \frac{e^\psi(1+e^\psi-e^\psi)}{(1+e^\psi)^2}\\
+&= \frac{e^\psi}{(1+e^\psi)^2}.
+\end{aligned}
+$$
+
+Thus, we obtained $$
+\begin{aligned}
+p_J(\psi)
+&= p_J(h(\psi)) \times \left|\frac{dh}{d\psi}\right|\\
+&= \left(\frac{1+e^\psi}{e^{\psi/2}}\right)
+\left(\frac{e^\psi}{(1+e^\psi)^2}\right)\\
+&= \frac{e^{\psi/2}}{1+e^\psi}.
+\end{aligned}
+$$
+
+This is the same density we derived in part b) of this exercise, as desired.
+
+I used ChatGPT to re-format my long equations. The steps are my own.
+
 ## Question 2
 
 ### Part A
@@ -125,4 +232,4 @@ $$
 \frac{1}{(1/2)}\int_0^1 \sin^2(\pi x) dx = 2*1/2 = 1.
 $$
 
-####  **Question:** Is this what this question is meaning to ask? Would we normally have the target function and be able to choose such a specific function like this?
+#### **Question:** Is this what this question is meaning to ask? Would we normally have the target function and be able to choose such a specific function like this?
