@@ -1,7 +1,7 @@
 ---
 title: "HW5"
 author: "Lucy Gagnon"
-format: html
+format: pdf
 editor: visual
 ---
 
@@ -29,30 +29,30 @@ where $$I(\theta) = - E\left[
 $$ is the Fisher information. We want to show that $p_J(\theta) \propto Beta(1/2,1/2).$ Let $Y \sim \text{Binomial}(n,\theta)$, so we have $p(Y|\theta) = {n \choose y} \theta^y*(1-\theta)^{n-y}$ First, we will simplify $\frac{\partial^2}{\partial \theta^2} \log(p(Y|\theta))$:
 
 $$
-\begin{align}
+\begin{aligned}
 \frac{\partial^2}{\partial \theta^2} \log(p(Y|\theta)) 
 &= \frac{\partial^2}{\partial \theta^2} \log[{n \choose y} \theta^y*(1-\theta)^{n-y}]\\
 &= \frac{\partial^2}{\partial \theta^2} \log[{n \choose y}]+y*\log[\theta]+(n-y)\log[(1-\theta)]\\
 &=\frac{\partial}{\partial \theta} \left( \frac{\partial}{\partial \theta} \left( \log[{n \choose y}]+y*\log[\theta]+(n-y)\log[(1-\theta)]\right)\right)\\
 &=\frac{\partial}{\partial \theta}\left( y*\frac{1}{\theta}+(n-y)\frac{1}{(1-\theta)}\right)\\
 &= -y*\frac{1}{\theta^2}-(n-y)\frac{1}{(1-\theta)^2}.
-\end{align}
+\end{aligned}
 $$
 
 Then, taking the expectation of the simplified expression yields
 
 $$
-\begin{align}
+\begin{aligned}
 \mathbf{E}[-y*\frac{1}{\theta^2}-(n-y)\frac{1}{(1-\theta)^2}]
 &= - \frac{1}{\theta^2}\mathbf{E}[y]-\frac{1}{(1-\theta)^2}\mathbf{E}[(n-y)]]\\
 &= - \frac{1}{\theta^2}\mathbf{E}[y]-\frac{1}{(1-\theta)^2}(n-\mathbf{E}[y])\\
-\end{align}
+\end{aligned}
 $$
 
 Since $Y$ is sampled from a binomial distribution, we know $\mathbf{E} = n*\theta$. Observe
 
 $$
-\begin{align}
+\begin{aligned}
  - \frac{1}{\theta^2}\mathbf{E}[y]-\frac{1}{(1-\theta)^2}(n-\mathbf{E}[y])
 &= - \frac{1}{\theta^2}*(n\theta)-\frac{1}{(1-\theta)^2}(n-(n\theta))\\
 &=-\frac{n}{\theta}-\frac{n(1-\theta)}{(1-\theta)^2}\\
@@ -63,7 +63,7 @@ $$
 &= -\frac{-n}{\theta*(1-\theta)}\\
 &\propto \theta^{-1/2}*(1-\theta)^{-1/2} \\
 &=Beta(1/2, 1/2).
-\end{align}
+\end{aligned}
 $$
 
 Therefore, $\boxed{p_J(\theta) \propto Beta(1/2,1/2)}.$
@@ -76,12 +76,12 @@ Therefore, $\boxed{p_J(\theta) \propto Beta(1/2,1/2)}.$
 Re-parameterizing the model in part a such that $\psi= \log[\theta/(1-\theta)]$ now gives $p(y|\psi) = {n \choose y}e^{\psi  y}*(1+e^{\psi})^{-n}$. Observe
 
 $$
-\begin{align}
+\begin{aligned}
 p_J(\psi) \propto \sqrt{I(\psi)} 
 &= \sqrt{-\mathbf{E}\left[
 \frac{\partial^2 \log p(Y \mid \psi)}{\partial \psi^2}
 \mid \psi \right]}.
-\end{align}
+\end{aligned}
 $$
 
 First, consider the following:
@@ -118,24 +118,24 @@ y - n e^\psi(1+e^\psi)^{-1}
 $$
 
 Now, substituting the above expression into $$
-\begin{align}
+\begin{aligned}
 p_J(\psi) \propto \sqrt{I(\psi)} 
 &= \sqrt{-\mathbf{E}\left[
 \frac{\partial^2 \log p(Y \mid \psi)}{\partial \psi^2}
 \mid \psi \right]}.
-\end{align}
+\end{aligned}
 $$
 
 yields the following:
 
 $$
-\begin{align}
+\begin{aligned}
 \sqrt{-\mathbf{E}\left[
 \frac{\partial^2 \log p(Y \mid \psi)}{\partial \psi^2}
 \mid \psi \right]} 
 &= \sqrt{-\mathbf{E}\left[-\frac{ne^\psi}{(1+e^\psi)^2}\right]}\\
 &= \frac{n^{1/2}e^{\psi/2}}{1+e^\psi}
-\end{align}
+\end{aligned}
 $$
 
 Therefore, we have $$p_J(\psi) \propto \frac{n^{1/2}e^{\psi/2}}{1+ e^{\psi}} \propto \frac{e^{\psi/2}}{1+ e^{\psi}}.$$
@@ -147,10 +147,10 @@ Therefore, we have $$p_J(\psi) \propto \frac{n^{1/2}e^{\psi/2}}{1+ e^{\psi}} \pr
 The prior distribution from a) is $p_J(\theta) \propto Beta(1/2, 1/2) \propto \theta^{-1/2}(1-\theta)^{-1/2}$. Using the change of variables formula from exercise 3.10, we have $h(\psi) = \theta  = \frac {e^\psi}{1+e\psi}$ and $p_J(\psi) = p_J(h(\psi)) \times \left|{\frac{dh}{d\psi}}\right|$. We know $p_J(\theta) \propto \theta^{-1/2}(1-\theta)^{-1/2}$. Observe
 
 $$
-\begin{align}
+\begin{aligned}
 p_J(h(\psi)) = p_J(\frac {e^\psi}{1+e\psi}) &\propto \left( \frac {e^\psi}{1+e\psi}\right)^{-1/2} * \left( 1- \frac {e^\psi}{1+e\psi}\right)^{-1/2}\\
 &=\frac{1+e^\psi}{e^{\psi/2}}.
-\end{align}
+\end{aligned}
 $$
 
 Now, observe: $$
@@ -214,9 +214,7 @@ beta_2 <- sim_fun(fx, envelope = "beta", par1 = 2, par2 = 2, n = 10^5)
 par(mfrow = c(1,1))
 ```
 
-Here, we provided the four histograms from Tasks 2 and 3 using the Uniform(0,1) and the Beta(2,2) enveloping proposals, along with acceptance ratios. We obtained similar acceptance ratios between 0.47 and 0.54 across all 4 conditions. The simulations of size $10^5$ show smoother histograms. Thus, it is not always the case that a larger simulation size will produce a higher (better) acceptance ratio.
-
-#### **Question:** Does this make sense for a description?
+Here, we provided the four histograms from Tasks 2 and 3 using the Uniform(0,1) and the Beta(2,2) enveloping proposals, along with acceptance ratios. We obtained similar acceptance ratios between 0.47 and 0.54 across all 4 conditions. The simulations of size $10^5$ show smoother histograms. Thus, it is not always the case that a larger simulation size (or an enveloping function that appears most simialr to the target function at first glance) will produce a higher (better) acceptance ratio.
 
 ### Part B
 
@@ -226,10 +224,12 @@ Since the acceptance ratios range between 0.47 - 0.54, both the Uniform(0,1) and
 
 *(ii) If you were to try and find an enveloping function that had a high acceptance ratio, which one would you try and why? For part (ii), either back up your choice using a small paragraph or (ii) empirically illustrate that it's better. (If you wanted to go above and beyond, you could do both, which is highly encouraged and would really prepare you for the exam!)*
 
-To try and find an enveloping function with a high acceptance ratio, I would choose a function that closely resembles the target function and is relatively easy to sample from. Since $\text{eff}(q(x))  = \frac{1}{c} \int_x\tilde{f}(x) dx$ and here we have $\int_0^1 \sin^2(\pi x) dx = 0.5$. Here, the ideal enveloping function is $q(x)2*\sin^2(\pi x)$ since this function would give $\tilde{f}(x) = \frac{1}{2} q(x)$, resulting in $\hat{c} = 1/2$ and a resulting acceptance ratio of 1:
+To try and find an enveloping function with a high acceptance ratio, I would try some additional Beta(a,b) distributions that more closely resemble the target function, as discussed in Lab 05. I would then draw samples from that Beta distribution until I obtained a higher acceptance ratio. Although the Beta and Uniform enveloping functions have similar acceptance ratios in this case, we may select a Beta distribution with lower variance to more closely resemble the target function, leaving less area for "rejected" samples while possibly resulting in more rejections near the "tails" of the target distribution.
+
+Alternatively, to try and find an enveloping function with a high acceptance ratio, I would choose a function that closely resembles the target function. Before using this function, we should make sure is relatively easy to sample from. Since $\text{eff}(q(x))  = \frac{1}{c} \int_x\tilde{f}(x) dx$ and here we have $\int_0^1 \sin^2(\pi x) dx = 0.5$. Here, the ideal enveloping function is $q(x)=2*\sin^2(\pi x)$ since this function would give $\tilde{f}(x) = \frac{1}{2} q(x)$, resulting in $\hat{c} = 1/2$ and a resulting acceptance ratio of 1:
 
 $$
 \frac{1}{(1/2)}\int_0^1 \sin^2(\pi x) dx = 2*1/2 = 1.
 $$
 
-#### **Question:** Is this what this question is meaning to ask? Would we normally have the target function and be able to choose such a specific function like this?
+#### 
