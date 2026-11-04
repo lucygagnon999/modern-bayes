@@ -1,0 +1,202 @@
+---
+title: "HW7"
+author: "Lucy Gagnon"
+format: html
+editor: visual
+---
+
+# Question 1
+
+*Australian crab data: The files bluecrab.dat and orangecrab.dat contain measurements of body depth (Y1) and rear width (Y2), in millimeters, made on 50 male crabs from each of two species, blue and orange. We will model these data using a bivariate normal distribution.*
+
+## Part A
+
+*For each of the two species, obtain posterior distributions of the population mean θ and covariance matrix Σ as follows: Using the semi-conjugate prior distributions for θ and Σ, set μ0 equal to the sample mean of the data, Λ0 and S0 equal to the sample covariance matrix and ν0 = 4. Obtain 10,000 posterior samples of θ and Σ.*
+
+```{r, echo=FALSE}
+#| output: false
+# load packages
+library (mvtnorm)
+library(MCMCpack)
+# set seed 
+set.seed(1)
+```
+
+```{r}
+# read data
+blue_data <- as.matrix(read.table("data/bluecrab.dat", header = FALSE))
+orange_data <- as.matrix(read.table("data/orangecrab.dat", header = FALSE))
+# name columns for clarity
+colnames(blue_data) <- colnames(orange_data) <- c("Y1", "Y2")
+
+# check dimensions
+#dim(blue_data)
+#dim(orange_data)
+
+# blue crabs
+Y_blue <- blue_data
+n_blue <- nrow(Y_blue)
+
+mu0_blue <- colMeans(Y_blue)  # sample mean
+L0_blue <- cov(Y_blue) # sample covariance matrix
+S0_blue <- L0_blue
+nu0_blue <- 4 # given
+
+# orange crabs
+Y_orange <- orange_data
+n_orange <- nrow(Y_orange)
+
+mu0_orange <- colMeans(Y_orange) # sample mean
+L0_orange <- cov(Y_orange) # sample cov matrix
+S0_orange <- L0_orange
+nu0_orange <- 4
+# used chatgpt to clarify problem structure
+```
+
+```{r}
+# create a funciton for Gibbs sampler based on class code
+run_gibbs <- function(Y, mu0, L0, S0, nu0) {
+  n <- nrow(Y)
+  ybar <- colMeans(Y)
+  Sigma <- cov(Y)  # initial value
+
+  THETA <- SIGMA <- NULL
+
+  for (s in 1:10000) {
+    ## update theta
+    Ln <- solve(solve(L0) + n * solve(Sigma))
+    mun <- Ln %*% (solve(L0) %*% mu0 +
+                    n * solve(Sigma) %*% ybar)
+    theta <- rmvnorm(1, mean = c(mun), sigma = Ln)
+
+    ## update Sigma
+    Sn <- S0 + (t(Y) - c(theta)) %*% t(t(Y) - c(theta))
+    Sigma <- solve(rwish(nu0 + n, solve(Sn)))
+
+    ## save results
+    THETA <- rbind(THETA, theta)
+    SIGMA <- rbind(SIGMA, c(Sigma))
+  }
+
+  list(THETA = THETA, SIGMA = SIGMA)
+}
+
+
+# run gibbs sampler for blue crabs
+blue_post <- run_gibbs(Y = Y_blue,mu0 = mu0_blue,L0 = L0_blue,S0 = S0_blue,
+  nu0 = nu0_blue)
+# run gibbs for orange crabs
+orange_post <- run_gibbs(Y = Y_orange, mu0 = mu0_orange,L0 = L0_orange,
+  S0 = S0_orange,nu0 = nu0_orange)
+
+head(blue_post)
+head(orange_post)
+# used chatgpt to convert code to function
+```
+
+## Part B
+
+Plot values of θ = (θ1, θ2)′ for each group and compare. Describe any size differences between the two groups.
+
+```{r}
+# extract thetas
+blue_theta <- blue_post$THETA
+orange_theta <- orange_post$THETA
+
+par(mfrow = c(1, 2))
+
+for (j in 1:2) {
+  db <- density(blue_theta[, j]) # extract densities
+  do <- density(orange_theta[, j])
+  # plot results
+  plot(db,xlim = range(db$x, do$x), ylim = c(0, max(db$y, do$y)),
+       col = "blue", lwd = 2, xlab = bquote(theta[.(j)] ~ "(mm)"),
+       main = c("Mean body depth", "Mean rear width")[j])
+
+  lines(do, col = "darkorange", lwd = 2)
+  # plot means
+  abline(v = mean(blue_theta[, j]),
+         col = "blue", lty = 2)
+  abline(v = mean(orange_theta[, j]),
+         col = "darkorange", lty = 2)
+  # add legend
+  legend("topright",
+         legend = c("Blue crabs", "Orange crabs"),
+         col = c("blue", "darkorange"),
+         lwd = 2, bty = "n")
+}
+
+par(mfrow = c(1, 1))
+# used chatgpt for plot style help
+```
+
+Here, we plotted values of $\theta = (\theta_1, \theta_2)'$ for each group. We notice a greater posterior mean for orange crabs for both mean body depth and mean rear width. The spread of the posterior densities appear relatively similar, qualitatively.
+
+**Question:** Only address center and spread? Address numerically or qualitatively fine?
+
+## Part C
+
+From each covariance matrix obtained from the Gibbs sampler, obtain the corresponding correlation coefficient. From these values, plot posterior densities of the correlations $\rho_{blue}$ and $\rho_{orange}$ for the two groups. Evaluate differences between the two species by comparing
+these posterior distributions. In particular, obtain an approximation to $P(\rho_{blue} <\rho_{orange} | y_{vlue}, y_{orange})$. What do the results suggest about differences between the two populations?
+
+```{r}
+# extract covariance matrices
+blue_sigma <- blue_post$SIGMA
+orange_sigma <- orange_post$SIGMA
+
+# compute correlation
+blue_rho <- blue_sigma[, 3] /sqrt(blue_sigma[, 1] * blue_sigma[, 4])
+
+orange_rho <- orange_sigma[, 3] /sqrt(orange_sigma[, 1] * orange_sigma[, 4])
+
+# overlay posterior densities
+db <- density(blue_rho, from = -1, to = 1)
+do <- density(orange_rho, from = -1, to = 1)
+
+plot(db,xlim = range(blue_rho, orange_rho), ylim = c(0, max(db$y, do$y)),
+     col = "blue", lwd = 2,xlab = expression(rho),
+     main = "Correlation between body depth and rear width")
+
+lines(do, col = "darkorange", lwd = 2)
+# plot means
+abline(v = mean(blue_rho), col = "blue", lty = 2)
+abline(v = mean(orange_rho), col = "darkorange", lty = 2)
+# add legeend
+legend("topleft",
+       legend = c("Blue crabs", "Orange crabs"),
+       col = c("blue", "darkorange"),
+       lwd = 2, bty = "n")
+# used chatgpt for plot style help
+
+# posterior probability
+mean(blue_rho < orange_rho)
+```
+
+Here, we plotted posterior densities of the correlations for the two groups. Both groups show relatively high correlation, with mean correlation values greater than 0.9, but the orange group shows higher correlation between body depth and rear width, as indicated by the greater mean correlation on the posterior density plot. In addition, the spread of the posterior density for the orange crabs correlation appears much narrower than for the blue crab group. The approximation to $P(\rho_{blue} <\rho_{orange} | y_{vlue}, y_{orange})$ is \~0.99, indicating that there is strong evidence to support that orange crabs have stronger popualtion correlation versus blue crabs.			
+
+				
+
+			
+
+		
+
+	
+
+				
+
+			
+
+		
+
+	
+
+
+					
+
+				
+
+			
+
+		
+
+	
